@@ -7,7 +7,9 @@ output:
         toc_depth: 2
 ---
 
-```{r load_packages, include = FALSE}
+> *"A man will be imprisoned in a room with a door that's unlocked and opens inwards; as long as it does not occur to him to pull rather than push." - Ludwig Wittgenstein*
+
+```{r load_packages, message = FALSE}
 library(tidyverse)
 library(readxl)
 ```
@@ -16,34 +18,47 @@ library(readxl)
 ###### (*25 points*)
 ##### *Read and clean the Mr. Trash Wheel sheet:*
 
-```{r read_in_mr_trash_wheel_data}
-#THIS CODE WORKS! DO NOT CHANGE IT!
-mr_tw_df =
-    read_excel("./data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", sheet = "Mr. Trash Wheel", skip = 1) %>% 
+The following code imports the designated excel file, specifically the sheet named "Mr. Trash Wheel." There is a graphic displayed in the first row of the sheet, so I opted to skip that row when importing. Thereafter, I cleaned the column/variable names by converting them into the ever sexy "snake_case." Then I dropped the column that contained notes. Lastly, I removed all the rows that did not have dumpster-specific data.  
+
+```{r read_in_mr_trash_wheel_data, message = FALSE}
+#THIS CODE WORKS! DO NOT CHANGE IT! TAKE OUT THIS MESSAGE WHEN ASSIGNMENT IS COMPLETED!
+mr_tw_df <-
+    read_excel("./data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", 
+               sheet = "Mr. Trash Wheel", skip = 1) %>% 
     janitor::clean_names() %>% 
     select(-x15) %>% 
     drop_na(dumpster)
-
-view(mr_tw_df)
 ```
 
-```{r read_in_2017_precipitation data}
-#THIS CODE WORKS! DO NOT CHANGE IT!
-precip_2017 =
-    read_excel("./data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", sheet = "2017 Precipitation", skip = 1) %>%
+The following code imports the designated excel file, specifically the sheet named "2017 Precipitation." There is no graphic in this sheet, but there is an additional row of header text; I skipped that row when importing. Thereafter, I cleaned the column names as before, removed rows with missing data in the `month` column, and added a new column: `year` with `2017` as its observations.  
+
+```{r read_in_2017_precipitation data, results = FALSE}
+#THIS CODE WORKS! DO NOT CHANGE IT! TAKE OUT THIS MESSAGE WHEN ASSIGNMENT IS COMPLETED!
+precip_2017 <-
+    read_excel("./data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", 
+               sheet = "2017 Precipitation", skip = 1) %>%
     janitor::clean_names() %>% 
     drop_na(month) %>% 
     mutate(year = "2017")
 ```
 
-```{r read_in_2018_precipitation data}
-#THIS CODE WORKS! DO NOT CHANGE IT!
-precip_2018 =
-    read_excel("./data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", sheet = "2018 Precipitation", skip = 1) %>%
+The following code does everything that the previous code does, with some small changes. The sheet named "2018 Precipitation" was imported, and the addition of the `year` column reflected `2018` as its observations.  
+
+```{r read_in_2018_precipitation data, results = FALSE}
+#THIS CODE WORKS! DO NOT CHANGE IT! TAKE OUT THIS MESSAGE WHEN ASSIGNMENT IS COMPLETED!
+precip_2018 <-
+    read_excel("./data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", 
+               sheet = "2018 Precipitation", skip = 1) %>%
     janitor::clean_names() %>% 
     drop_na() %>% 
     mutate(year = "2018")
 ```
+
+```{r binding_datasets}
+precip_17_18 =
+    bind_rows(precip_2017, precip_2018)
+```
+
 
 ## Problem #2
 ###### (*25 points*)
