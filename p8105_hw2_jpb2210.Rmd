@@ -18,16 +18,19 @@ library(readxl)
 ###### (*25 points*)
 ##### *Read and clean the Mr. Trash Wheel sheet:*
 
-The following code imports the designated excel file, specifically the sheet named "Mr. Trash Wheel." There is a graphic displayed in the first row of the sheet, so I opted to skip that row when importing. Thereafter, I cleaned the column/variable names by converting them into the ever sexy "snake_case." Then I dropped the column that contained notes. Lastly, I removed all the rows that did not have dumpster-specific data.  
+The following code imports the designated excel file, specifically the sheet named "Mr. Trash Wheel." There is a graphic displayed in the first row of the sheet, so I opted to skip that row when importing. Thereafter, I cleaned the column/variable names by converting them into the ever sexy "snake_case." Then I dropped the column that contained notes and removed all the rows that did not have dumpster-specific data. Lastly, I rounded the variable `sports_balls` to the nearest integer and mutated it from a `dbl` to an `int`.
 
 ```{r read_in_mr_trash_wheel_data, message = FALSE}
-#THIS CODE WORKS! DO NOT CHANGE IT! TAKE OUT THIS MESSAGE WHEN ASSIGNMENT IS COMPLETED!
+#[COMPLETED] THIS CODE WORKS! DO NOT CHANGE IT! TAKE OUT THIS MESSAGE WHEN ASSIGNMENT IS COMPLETED!
 mr_tw_df <-
     read_excel("./data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", 
                sheet = "Mr. Trash Wheel", skip = 1) %>% 
     janitor::clean_names() %>% 
     select(-x15) %>% 
-    drop_na(dumpster)
+    drop_na(dumpster) %>% 
+    mutate(
+        sports_balls = as.integer(
+            round(sports_balls, digits = 0)))
 ```
 
 The following code imports the designated excel file, specifically the sheet named "2017 Precipitation." There is no graphic in this sheet, but there is an additional row of header text; I skipped that row when importing. Thereafter, I cleaned the column names as before, removed rows with missing data in the `month` column, and added a new column: `year` with `2017` as its observations.  
@@ -52,6 +55,17 @@ precip_2018 <-
     janitor::clean_names() %>% 
     drop_na() %>% 
     mutate(year = "2018")
+```
+
+
+```{r TEST CODE FIELD, echo = FALSE}
+
+
+
+
+    
+
+mr_tw_df
 ```
 
 ```{r binding_datasets}
