@@ -9,8 +9,31 @@ output:
 
 ```{r load_packages, include = FALSE}
 library(tidyverse)
+library(readxl)
 ```
 
 ## Problem #1
 ###### (*25 points*)
 ##### *Read and clean the Mr. Trash Wheel sheet:*
+
+```{r}
+mr_tw_df =
+    read_excel("./data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", sheet = "Mr. Trash Wheel") %>% 
+    janitor::clean_names() %>% 
+    select(-x15)
+
+view(mr_tw_df)
+    drop_na(mr_tw, dumpster)
+```
+
+note: start at row 2, names = TRUE, skip column 15
+
+
+## Problem #2
+###### (*25 points*)
+##### *Read and Merge 538.com Datasets:*
+
+
+## Problem #3
+###### (*25 points*)
+##### *BABY NAMES! BABY NAMES! BABY NAMES!:*
