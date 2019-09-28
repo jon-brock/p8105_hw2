@@ -16,15 +16,34 @@ library(readxl)
 ###### (*25 points*)
 ##### *Read and clean the Mr. Trash Wheel sheet:*
 
-```{r}
+```{r read_in_mr_trash_wheel_data}
 #THIS CODE WORKS! DO NOT CHANGE IT!
 mr_tw_df =
-    read_excel("./data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", sheet = "Mr. Trash Wheel") %>% 
+    read_excel("./data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", sheet = "Mr. Trash Wheel", skip = 1) %>% 
     janitor::clean_names() %>% 
     select(-x15) %>% 
     drop_na(dumpster)
+
+view(mr_tw_df)
 ```
 
+```{r read_in_2017_precipitation data}
+#THIS CODE WORKS! DO NOT CHANGE IT!
+precip_2017 =
+    read_excel("./data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", sheet = "2017 Precipitation", skip = 1) %>%
+    janitor::clean_names() %>% 
+    drop_na(month) %>% 
+    mutate(year = "2017")
+```
+
+```{r read_in_2018_precipitation data}
+#THIS CODE WORKS! DO NOT CHANGE IT!
+precip_2018 =
+    read_excel("./data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", sheet = "2018 Precipitation", skip = 1) %>%
+    janitor::clean_names() %>% 
+    drop_na() %>% 
+    mutate(year = "2018")
+```
 
 ## Problem #2
 ###### (*25 points*)
