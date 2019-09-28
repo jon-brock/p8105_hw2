@@ -17,16 +17,13 @@ library(readxl)
 ##### *Read and clean the Mr. Trash Wheel sheet:*
 
 ```{r}
+#THIS CODE WORKS! DO NOT CHANGE IT!
 mr_tw_df =
     read_excel("./data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", sheet = "Mr. Trash Wheel") %>% 
     janitor::clean_names() %>% 
-    select(-x15)
-
-view(mr_tw_df)
-    drop_na(mr_tw, dumpster)
+    select(-x15) %>% 
+    drop_na(dumpster)
 ```
-
-note: start at row 2, names = TRUE, skip column 15
 
 
 ## Problem #2
