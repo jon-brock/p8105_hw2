@@ -43,7 +43,7 @@ precip_2017 <-
     janitor::clean_names() %>% 
     drop_na(month) %>% 
     mutate(
-        month = as.integer(month),
+        month = month.name[month],
         year = "2017")
 ```
 
@@ -57,7 +57,7 @@ precip_2018 <-
     janitor::clean_names() %>% 
     drop_na() %>% 
     mutate(
-        month = as.integer(month),
+        month = month.name[month],
         year = "2018")
 ```
 
@@ -101,3 +101,16 @@ unemployment %>% #GOOD CODE
 ## Problem #3
 ###### (*25 points*)
 ##### *BABY NAMES! BABY NAMES! BABY NAMES!:*
+
+
+```{r}
+precip_2017 <-
+    read_excel("./data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", 
+               sheet = "2017 Precipitation", skip = 1) %>%
+    janitor::clean_names() %>% 
+    drop_na(month) %>% 
+    mutate(
+        month = month.name[month],
+        year = "2017")
+```
+
