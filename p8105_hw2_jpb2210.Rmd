@@ -20,7 +20,7 @@ library(readxl)
 
 The following code imports the designated excel file, specifically the sheet named "Mr. Trash Wheel." There is a graphic displayed in the first row of the sheet, so I opted to skip that row when importing. Thereafter, I cleaned the column/variable names by converting them into the ever sexy "snake_case." Then I dropped the column that contained notes and removed all the rows that did not have dumpster-specific data. Lastly, I rounded the variable `sports_balls` to the nearest integer and mutated it from a `dbl` to an `int`.
 
-```{r read_in_mr_trash_wheel_data, message = FALSE}
+```{r read_in_mr_trash_wheel_data, results = FALSE}
 #[COMPLETED] THIS CODE WORKS! DO NOT CHANGE IT! TAKE OUT THIS MESSAGE WHEN ASSIGNMENT IS COMPLETED!
 mr_tw_df <-
     read_excel("./data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", 
@@ -42,7 +42,9 @@ precip_2017 <-
                sheet = "2017 Precipitation", skip = 1) %>%
     janitor::clean_names() %>% 
     drop_na(month) %>% 
-    mutate(year = "2017")
+    mutate(
+        month = as.integer(month),
+        year = "2017")
 ```
 
 The following code does everything that the previous code does, with some small changes. The sheet named "2018 Precipitation" was imported, and the addition of the `year` column reflected `2018` as its observations.  
@@ -54,30 +56,47 @@ precip_2018 <-
                sheet = "2018 Precipitation", skip = 1) %>%
     janitor::clean_names() %>% 
     drop_na() %>% 
-    mutate(year = "2018")
+    mutate(
+        month = as.integer(month),
+        year = "2018")
 ```
-
-
-```{r TEST CODE FIELD, echo = FALSE}
-
-
-
-
-    
-
-mr_tw_df
-```
-
-```{r binding_datasets}
-precip_17_18 =
-    bind_rows(precip_2017, precip_2018)
-```
-
 
 ## Problem #2
 ###### (*25 points*)
 ##### *Read and Merge 538.com Datasets:*
 
+```{r read_in_three_538_excel_files, results = FALSE}
+pols_month <- read_csv("./data/pols-month.csv") #GOOD CODE
+unemployment <- read_csv("./data/unemployment.csv") #GOOD CODE
+snp <- read_csv("./data/snp.csv") #GOOD CODE
+```
+
+```{r clean_pols_month_data}
+pols_month %>% #GOOD CODE
+    separate(mon, into = (c("year", "month", "day"))) #GOOD CODE %>% 
+    #INSERT CODE THAT REPLACES "month" (NUMBER) WITH "month" (NAME) %>% 
+    #INSRT CODE THAT:
+        #CREATES A NEW COLUMN ("president")
+        #CONVERTS "prez_gop" AND "prez_dem" INTO FACTORS(?) WITH "gop" and "dem"
+    #INSERT CODE THAT REMOVES "prez_gop", "prez_dem", AND "day"
+```
+
+```{r clean_snp_data}
+snp %>% #GOOD CODE
+    separate(date, into = (c("month", "day", "year"))) %>% #GOOD CODE
+    #INSERT CODE THAT REPLACES "month" (NUMBER) WITH "month" (NAME) %>% 
+    select(year, month, everything(), -day) #GOOD CODE
+```
+
+```{r clean_unemployment_data}
+unemployment %>% #GOOD CODE
+    janitor::clean_names() %>% #GOOD CODE
+    pivot_longer( #GOOD CODE
+        jan:dec, #GOOD CODE
+        names_to = "month", #GOOD CODE
+        values_to = "pct_unemp") %>% #GOOD CODE
+    mutate(year = as.character(year))
+```
 
 ## Problem #3
 ###### (*25 points*)
