@@ -20,8 +20,7 @@ library(readxl)
 
 The following code imports the designated excel file, specifically the sheet named "Mr. Trash Wheel." There is a graphic displayed in the first row of the sheet, so I opted to skip that row when importing. Thereafter, I cleaned the column/variable names by converting them into the ever sexy "snake_case." Then I dropped the column that contained notes and removed all the rows that did not have dumpster-specific data. Lastly, I rounded the variable `sports_balls` to the nearest integer and mutated it from a `dbl` to an `int`.
 
-```{r read_in_mr_trash_wheel_data, results = FALSE}
-#[COMPLETED] THIS CODE WORKS! DO NOT CHANGE IT! TAKE OUT THIS MESSAGE WHEN ASSIGNMENT IS COMPLETED!
+```{r read_in_mr_trash_wheel_data, message = FALSE}
 mr_tw_df <-
     read_excel("./data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", 
                sheet = "Mr. Trash Wheel", skip = 1) %>% 
@@ -35,31 +34,36 @@ mr_tw_df <-
 
 The following code imports the designated excel file, specifically the sheet named "2017 Precipitation." There is no graphic in this sheet, but there is an additional row of header text; I skipped that row when importing. Thereafter, I cleaned the column names as before, removed rows with missing data in the `month` column, and added a new column: `year` with `2017` as its observations.  
 
-```{r read_in_2017_precipitation data, results = FALSE}
-#THIS CODE WORKS! DO NOT CHANGE IT! TAKE OUT THIS MESSAGE WHEN ASSIGNMENT IS COMPLETED!
+```{r read_in_2017_precipitation data}
 precip_2017 <-
     read_excel("./data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", 
                sheet = "2017 Precipitation", skip = 1) %>%
     janitor::clean_names() %>% 
     drop_na(month) %>% 
-    mutate(
-        month = month.name[month],
-        year = "2017")
+    mutate(year = "2017")
 ```
 
 The following code does everything that the previous code does, with some small changes. The sheet named "2018 Precipitation" was imported, and the addition of the `year` column reflected `2018` as its observations.  
 
-```{r read_in_2018_precipitation data, results = FALSE}
-#THIS CODE WORKS! DO NOT CHANGE IT! TAKE OUT THIS MESSAGE WHEN ASSIGNMENT IS COMPLETED!
+```{r read_in_2018_precipitation data}
 precip_2018 <-
     read_excel("./data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", 
                sheet = "2018 Precipitation", skip = 1) %>%
     janitor::clean_names() %>% 
     drop_na() %>% 
-    mutate(
-        month = month.name[month],
-        year = "2018")
+    mutate(year = "2018")
 ```
+
+The following code binds both the `precip_2017` and `precip_2018` tibbles into one, mutates the `month` vector from a `dbl` to a `chr`, and arranges them as such: `year` > `month` > `total`.
+
+```{r combining_precip_data}
+precip_1718 <-
+    bind_rows(precip_2017, precip_2018) %>% 
+    mutate(month = month.name[month]) %>% 
+    select(year, month, total)
+```
+
+Let's give a brief rundown on our tibbles: In `2017` there were `r count(filter(precip_2017, total > 0))` months that had precipitation, though we had data for all months. In `2018`, of the `r nrow(precip_2018)` months' worth of data there were `r count(filter(precip_2018, total > 0))` months with precipitation. The `precip_2017` tibble had a reported total precipitation of `r sum(pull(precip_2017, total))` inches. The `precip_2018` tibble had a reported total precipitation of `r sum(pull(precip_2018, total))` inches. There was a net decrease of `r sum(pull(precip_2017, total)) - sum(pull(precip_2018, total))` inches from `2017` to `2018`. The `mr_tw_df` had far more information than the two aforementioned tibbles. (`r ncol(mr_tw_df)` columns vs. `r ncol(precip_2017)` and `r ncol(precip_2018)` columns, respectively.) That tibble included key variables such as: `dumpster`, `plastic_bottles`, `cigarette_butts`, `grocery bags`, and `sports_balls`, which, what is a sports ball? (Anyone?) Regardless of what it is, in `2017` the median number of `sports_balls` in a dumpster was `r mr_tw_df %>% filter(year == 2017) %>% pull(sports_balls) %>% median()` balls.
 
 ## Problem #2
 ###### (*25 points*)
@@ -73,9 +77,10 @@ snp <- read_csv("./data/snp.csv") #GOOD CODE
 
 ```{r clean_pols_month_data}
 pols_month %>% #GOOD CODE
-    separate(mon, into = (c("year", "month", "day"))) #GOOD CODE %>% 
-    #INSERT CODE THAT REPLACES "month" (NUMBER) WITH "month" (NAME) %>% 
-    #INSRT CODE THAT:
+    separate(
+        mon, into = (c("year", "month", "day")), remove = TRUE, convert = TRUE) %>%  #GOOD CODE
+    mutate(month = month.name[month]) 
+    #INSERT CODE THAT:
         #CREATES A NEW COLUMN ("president")
         #CONVERTS "prez_gop" AND "prez_dem" INTO FACTORS(?) WITH "gop" and "dem"
     #INSERT CODE THAT REMOVES "prez_gop", "prez_dem", AND "day"
@@ -83,9 +88,9 @@ pols_month %>% #GOOD CODE
 
 ```{r clean_snp_data}
 snp %>% #GOOD CODE
-    separate(date, into = (c("month", "day", "year"))) %>% #GOOD CODE
-    #INSERT CODE THAT REPLACES "month" (NUMBER) WITH "month" (NAME) %>% 
-    select(year, month, everything(), -day) #GOOD CODE
+    separate(date, into = (c("month", "day", "year")), remove = TRUE, convert = TRUE) %>% #GOOD CODE
+    mutate(month = month.name[month]) %>% 
+    select(year, month, close, -day) #GOOD CODE
 ```
 
 ```{r clean_unemployment_data}
@@ -94,23 +99,12 @@ unemployment %>% #GOOD CODE
     pivot_longer( #GOOD CODE
         jan:dec, #GOOD CODE
         names_to = "month", #GOOD CODE
-        values_to = "pct_unemp") %>% #GOOD CODE
-    mutate(year = as.character(year))
+        values_to = "pct_unemp") #%>% #GOOD CODE
+    #mutate(
+        #year = as.integer(year),
+        #month = )#NEEDS FUNCTIONING CODE HERE
 ```
 
 ## Problem #3
 ###### (*25 points*)
 ##### *BABY NAMES! BABY NAMES! BABY NAMES!:*
-
-
-```{r}
-precip_2017 <-
-    read_excel("./data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", 
-               sheet = "2017 Precipitation", skip = 1) %>%
-    janitor::clean_names() %>% 
-    drop_na(month) %>% 
-    mutate(
-        month = month.name[month],
-        year = "2017")
-```
-
