@@ -22,7 +22,7 @@ The following code imports the designated excel file, specifically the sheet nam
 
 ```{r read_in_mr_trash_wheel_data, message = FALSE}
 mr_tw_df <-
-    read_excel("./data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", 
+    read_excel("./data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", 
                sheet = "Mr. Trash Wheel", skip = 1) %>% 
     janitor::clean_names() %>% 
     select(-x15) %>% 
