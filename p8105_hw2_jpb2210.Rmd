@@ -22,7 +22,7 @@ The following code imports the designated excel file, specifically the sheet nam
 
 ```{r read_in_mr_trash_wheel_data, message = FALSE}
 mr_tw_df <-
-    read_excel("./data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", 
+    read_excel("./data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", 
                sheet = "Mr. Trash Wheel", skip = 1) %>% 
     janitor::clean_names() %>% 
     select(-x15) %>% 
@@ -70,36 +70,30 @@ Let's give a brief rundown on our tibbles: In `2017` there were `r count(filter(
 ##### *Read and Merge 538.com Datasets:*
 
 ```{r read_in_three_538_excel_files, message = FALSE}
-pols_month <- read_csv("./data/pols-month.csv") #GOOD CODE
-unemployment <- read_csv("./data/unemployment.csv") #GOOD CODE
-snp <- read_csv("./data/snp.csv") #GOOD CODE
+#COMPLETED
+pols_month <- read_csv("./data/pols-month.csv")
+unemployment <- read_csv("./data/unemployment.csv")
+snp <- read_csv("./data/snp.csv")
 ```
 
 ```{r clean_pols_month_data, results = FALSE}
-pols_month %>% #GOOD CODE
-    separate( #GOOD CODE
-        mon, into = (c("year", "month", "day")), remove = TRUE, convert = TRUE) %>%  #GOOD CODE
+#COMPLETED
+pols_month %>%
+    separate(
+        mon, into = (c("year", "month", "day")), remove = TRUE, convert = TRUE) %>%
     mutate(
-        month = month.name[month],  #GOOD CODE
-        prez_gop = if_else(prez_gop == 1, "gop", "NA"), #GOOD CODE
-        prez_dem = if_else(prez_dem == 1, "dem", "NA"), #GOOD CODE
-        pivot_longer(prez_gop, prez_dem,
-                     names_to = "president",
-                     values_to = "prez_gop", "prez_dem"), #USE PIVOT
-        select(-prez_gop, -prez_dem, -day)) #PROBABLY GOOD CODE
-        
-        
-    #INSERT CODE THAT:
-        #CREATES A NEW COLUMN ("president")
-        #CONVERTS "prez_gop" AND "prez_dem" INTO FACTORS(?) WITH "gop" and "dem"
-    #INSERT CODE THAT REMOVES "prez_gop", "prez_dem", AND "day"
+        month = month.name[month],
+        prez_dem = if_else(prez_dem == 1, "dem", "gop"),
+        president = prez_dem) %>%
+    select(-c(prez_gop, prez_dem, day))
 ```
 
 ```{r clean_snp_data, results = FALSE}
-snp %>% #GOOD CODE
-    separate(date, into = (c("month", "day", "year")), remove = TRUE, convert = TRUE) %>% #GOOD CODE
-    mutate(month = month.name[month]) %>% #GOOD CODE
-    select(year, month, close, -day) #GOOD CODE
+#COMPLETED
+snp %>%
+    separate(date, into = (c("month", "day", "year")), remove = TRUE, convert = TRUE) %>%
+    mutate(month = month.name[month]) %>%
+    select(year, month, close, -day)
 ```
 
 ```{r clean_unemployment_data, results = FALSE}
@@ -112,6 +106,11 @@ unemployment %>% #GOOD CODE
     #mutate(
         #year = as.integer(year),
         #month = )#NEEDS FUNCTIONING CODE HERE
+```
+
+```{r join_all_538_datasets}
+#pols_month %>% 
+ #   left_join(snp, by = c("year", "month"))
 ```
 
 ## Problem #3
@@ -135,3 +134,5 @@ baby_data %>% #TEST CODE - NOT FINALIZED
         names_from = year_of_birth,
         values_from = childs_first_name)
 ```
+
+## Bonus Content
