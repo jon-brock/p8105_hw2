@@ -70,15 +70,14 @@ Let's give a brief rundown on our tibbles: In `2017` there were `r count(filter(
 ##### *Read and Merge 538.com Datasets:*
 
 ```{r read_in_three_538_excel_files, message = FALSE}
-#COMPLETED
 pols_month <- read_csv("./data/pols-month.csv")
 unemployment <- read_csv("./data/unemployment.csv")
 snp <- read_csv("./data/snp.csv")
 ```
 
 ```{r clean_pols_month_data, results = FALSE}
-#COMPLETED
-pols_month %>%
+pols_month <- 
+    pols_month %>% 
     separate(
         mon, into = (c("year", "month", "day")), remove = TRUE, convert = TRUE) %>%
     mutate(
@@ -89,16 +88,16 @@ pols_month %>%
 ```
 
 ```{r clean_snp_data, results = FALSE}
-#COMPLETED
-snp %>%
+snp <-
+    snp %>%
     separate(date, into = (c("month", "day", "year")), remove = TRUE, convert = TRUE) %>%
     mutate(month = month.name[month]) %>%
     select(year, month, close, -day)
 ```
 
 ```{r clean_unemployment_data, results = FALSE}
-#COMPLETED
-unemployment %>% #GOOD CODE
+unemployment <-
+    unemployment %>% #GOOD CODE
     pivot_longer( #GOOD CODE
         Jan:Dec, #GOOD CODE
         names_to = "Month", #GOOD CODE
@@ -110,12 +109,12 @@ unemployment %>% #GOOD CODE
     janitor::clean_names()
 ```
 
-```{r join_all_538_datasets, eval = FALSE}
-pols_snp <- left_join(pols_month, snp, by = c("year" = "year", "month" = "month"))
-
+```{r join_all_538_datasets}
+pols_snp <- left_join(pols_month, snp, by = c("year", "month"))
+pols_snp_unemp <- left_join(pols_snp, unemployment, by = c("year", "month"))
 ```
 
-What we have here are three separate datasets (`pols_months`, `snp`, and `unemployment`) containing US political office, stock market, and unemployment data on the national level. (Side note: 538 nailed every election prediction until...well, you know.) The `pols_months` dataset (after cleaning) contained `r ncol(pols_month)` variables, which included data on the overall count of political representations in both the Legislative and Executive branches of government for any given month and year. For example, in April '62 there were `r filter(pols_month, "year" == 1962, "month" == "April") %>% pull(sen_dem)` Democratic Senators and `XXX` GOP Senators in the US Senate.
+What we have here are three separate datasets (`pols_months`, `snp`, and `unemployment`) containing US political office, stock market, and unemployment data on the national level. (Side note: 538 nailed every election prediction until...well, you know.) The `pols_months` dataset (after cleaning) contained `r ncol(pols_month)` variables, which included data on the overall count of political representation in both the Legislative and Executive branches of government for any given month and year. For example, in April '62 there were `r filter(pols_month, "year" == 1962, "month" == "April") %>% pull(sen_dem)` Democratic Senators and `XXX` GOP Senators in the US Senate.
 
 ## Problem #3
 ###### (*25 points*)
