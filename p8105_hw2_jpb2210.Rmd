@@ -170,7 +170,7 @@ baby_data_olivia <-
 
 This simple call generates our nice and tidy table for Olivia.
 
-```{r display_table_olivia}
+```{r display_table_olivia, fig.align= 'center'}
 baby_data_olivia
 ```
 
@@ -190,14 +190,25 @@ baby_data_males <-
 
 This simple call generates our nice and tidy table for Males.
 
-```{r display_table_males}
+```{r display_table_males, fig.align= 'center'}
 baby_data_males
 ```
 
-The following code generates a scatterplot showing the number of children with a name against the rank in popularity of that name.
+The following code generates a scatterplot showing the number of children with a name against the rank in popularity of that name, after filtering for `white non hispanic`, `male`, and `2016` as the `year_of_birth`. 
 
-```{r scatterplot_of_names, eval = FALSE}
-#TO BE COMPLETED
+```{r scatterplot_of_names, fig.align= 'center'}
+baby_data_plot <-
+    filter(baby_data,
+           ethnicity == "white non hispanic",
+           gender == "male",
+           year_of_birth == 2016)
+
+bdp <- ggplot(baby_data_plot, aes(x = rank, y = count))  + geom_point()
+bdp + labs(
+    title = "The Total Count of Particular Names by Their Popularity Rank",
+    subtitle = "Amongst White Non-Hispanic Males Born in 2016",
+    x = "Popularity Ranking",
+    y = "Number of Male Babies Named a Particular Name")
 ```
 
 ***
