@@ -203,7 +203,7 @@ baby_data_plot <-
            gender == "male",
            year_of_birth == 2016)
 
-bdp <- ggplot(baby_data_plot, aes(x = rank, y = count))  + geom_point(colour = "red", size = 2, alpha = 1/5)
+bdp <- ggplot(baby_data_plot, aes(x = rank, y = count)) + geom_point(colour = "red", size = 2, alpha = 1/5)
 bdp + labs(
     title = "The Total Count of Particular Names* by Their Popularity Rank",
     subtitle = "Amongst White Non-Hispanic Males Born in 2016",
