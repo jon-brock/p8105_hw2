@@ -130,11 +130,13 @@ What we have here are three separate datasets (`pols_months`, `snp`, and `unempl
 ###### (*25 points*)
 ##### *BABY NAMES! BABY NAMES! BABY NAMES!:*
 
+The following code thoroughly cleans, mutates, and coerces the dataset concerning popular [baby names](https://youtu.be/JAfSjh6_2Jk?t=54). We remove duplicates by converting `childs_first_name` to the same case, and account for the different character descriptions for the same ethnicity (i.e., `asian and paci` vs. `asian and pacific islander`) by way of a simple recode. Lastly, we remove all the duplicate rows where `year_of_birth`, `ethnicity`, and `childs_first_name` match other rows.
+
 ```{r clean_baby_name_data, message = FALSE}
 #COMPLETED
-baby_data <- #GOOD CODE
-    read_csv("./data/Popular_Baby_Names.csv") %>% #GOOD CODE
-    janitor::clean_names() %>% #GOOD CODE
+baby_data <-
+    read_csv("./data/Popular_Baby_Names.csv") %>%
+    janitor::clean_names() %>%
     mutate(
         childs_first_name = str_to_lower(childs_first_name),
         ethnicity = str_to_lower(ethnicity),
@@ -146,19 +148,37 @@ baby_data <- #GOOD CODE
         gender = str_to_lower(gender),
         gender = as.factor(gender),
         year_of_birth = as.integer(year_of_birth)) %>% 
-    distinct(childs_first_name, .keep_all = TRUE)  #GOOD CODE
+    distinct(year_of_birth, ethnicity, childs_first_name, .keep_all = TRUE)
 ```
 
-```{r generate_table, eval = FALSE}
-baby_data -> #TEST CODE - NOT FINALIZED
-    baby_data %>% 
-    filter(childs_first_name == "olivia") %>% 
+The following code sets us up to generate a table showing the ranking of the name `Olivia` among each of the four ethnicities for the years 2011 through 2016.
+
+```{r generate_table_olivia}
+#COMPLETED
+baby_data <-
+    filter(baby_data, childs_first_name == "olivia") %>%
+    select(-c("gender", "childs_first_name", "count")) %>% 
     pivot_wider(
-        names_from = year_of_birth,
-        values_from = childs_first_name) %>% 
-    group_by(ethnicity)
-
+        names_from = "year_of_birth",
+        values_from = "rank") %>% 
+    knitr::kable(align = 'c')
 ```
+
+This simple call generates our nice and tidy table.
+
+```{r display_table}
+baby_data
+```
+
+
+```{r generate_table_male_names, eval = FALSE}
+#TO BE COMPLETED
+```
+
+```{r scatterplot_of_names, eval = FALSE}
+#TO BE COMPLETED
+```
+
 
 ## Bonus Content
 A handy guide for if you visit San Francisco. Bears can be vicious and unpredictable! Better to be prepared than not.
