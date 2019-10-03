@@ -14,6 +14,8 @@ library(tidyverse)
 library(readxl)
 ```
 
+***
+
 ## Problem #1
 ###### (*25 points*)
 ##### *Read and clean the Mr. Trash Wheel sheet:*
@@ -64,6 +66,8 @@ precip_1718 <-
 ```
 
 Let's give a brief rundown on our tibbles: In `2017` there were `r count(filter(precip_2017, total > 0))` months that had precipitation, though we had data for all months. In `2018`, of the `r nrow(precip_2018)` months' worth of data there were `r count(filter(precip_2018, total > 0))` months with precipitation. The `precip_2017` tibble had a reported total precipitation of `r sum(pull(precip_2017, total))` inches. The `precip_2018` tibble had a reported total precipitation of `r sum(pull(precip_2018, total))` inches. There was a net decrease of `r sum(pull(precip_2017, total)) - sum(pull(precip_2018, total))` inches from `2017` to `2018`. The `mr_tw_df` had far more information than the two aforementioned tibbles. (`r ncol(mr_tw_df)` columns vs. `r ncol(precip_2017)` and `r ncol(precip_2018)` columns, respectively.) That tibble included key variables such as: `dumpster`, `plastic_bottles`, `cigarette_butts`, `grocery bags`, and `sports_balls`, which, what is a sports ball? (Anyone?) Regardless of what it is, in `2017` the median number of `sports_balls` in a dumpster was `r mr_tw_df %>% filter(year == 2017) %>% pull(sports_balls) %>% median()` balls.
+
+***
 
 ## Problem #2
 ###### (*25 points*)
@@ -126,6 +130,8 @@ pols_snp_unemp <- left_join(pols_snp, unemployment, by = c("year", "month"))
 
 What we have here are three separate datasets (`pols_months`, `snp`, and `unemployment`) containing US political office, stock market, and unemployment data on the national level. (Side note: 538 nailed every election prediction until...well, you know.) The `pols_month` dataset (after cleaning) contained `r ncol(pols_month)` variables, which included data on the overall count of political representation in both the Legislative and Executive branches of government for any given month and year. The year range for the data covered from `r min(pull(pols_snp_unemp, year))` through `r max(pull(pols_snp_unemp, year))`.
 
+***
+
 ## Problem #3
 ###### (*25 points*)
 ##### *BABY NAMES! BABY NAMES! BABY NAMES!:*
@@ -133,7 +139,6 @@ What we have here are three separate datasets (`pols_months`, `snp`, and `unempl
 The following code thoroughly cleans, mutates, and coerces the dataset concerning popular [baby names](https://youtu.be/JAfSjh6_2Jk?t=54). We remove duplicates by converting `childs_first_name` to the same case, and account for the different character descriptions for the same ethnicity (i.e., `asian and paci` vs. `asian and pacific islander`) by way of a simple recode. Lastly, we remove all the duplicate rows where `year_of_birth`, `ethnicity`, and `childs_first_name` match other rows.
 
 ```{r clean_baby_name_data, message = FALSE}
-#COMPLETED
 baby_data <-
     read_csv("./data/Popular_Baby_Names.csv") %>%
     janitor::clean_names() %>%
@@ -154,8 +159,7 @@ baby_data <-
 The following code sets us up to generate a table showing the ranking of the name `Olivia` among each of the four ethnicities for the years 2011 through 2016.
 
 ```{r generate_table_olivia}
-#COMPLETED
-baby_data <-
+baby_data_olivia <-
     filter(baby_data, childs_first_name == "olivia") %>%
     select(-c("gender", "childs_first_name", "count")) %>% 
     pivot_wider(
@@ -164,21 +168,39 @@ baby_data <-
     knitr::kable(align = 'c')
 ```
 
-This simple call generates our nice and tidy table.
+This simple call generates our nice and tidy table for Olivia.
 
-```{r display_table}
-baby_data
+```{r display_table_olivia}
+baby_data_olivia
 ```
 
+The following code sets us up to generate a table showing the most popular `male` names among each of the four ethnicities for the years 2011 through 2016.
 
-```{r generate_table_male_names, eval = FALSE}
-#TO BE COMPLETED
+```{r generate_table_male_names}
+baby_data_males <-
+    filter(baby_data,
+        rank == 1,
+        gender == "male") %>%
+    select(-c("gender", "count", "rank")) %>% 
+    pivot_wider(
+        names_from = "year_of_birth",
+        values_from = "childs_first_name") %>% 
+    knitr::kable(align = 'c')
 ```
+
+This simple call generates our nice and tidy table for Males.
+
+```{r display_table_males}
+baby_data_males
+```
+
+The following code generates a scatterplot showing the number of children with a name against the rank in popularity of that name.
 
 ```{r scatterplot_of_names, eval = FALSE}
 #TO BE COMPLETED
 ```
 
+***
 
 ## Bonus Content
 A handy guide for if you visit San Francisco. Bears can be vicious and unpredictable! Better to be prepared than not.
